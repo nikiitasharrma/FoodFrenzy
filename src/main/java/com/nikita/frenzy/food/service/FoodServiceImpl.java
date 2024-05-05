@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.nikita.frenzy.food.models.Restaurant;
 import com.nikita.frenzy.food.models.food.Food;
@@ -12,6 +13,7 @@ import com.nikita.frenzy.food.models.food.FoodCategory;
 import com.nikita.frenzy.food.repository.FoodRepository;
 import com.nikita.frenzy.food.request.CreateFoodRequest;
 
+@Service
 public class FoodServiceImpl implements FoodService {
 	
 	@Autowired
@@ -68,7 +70,12 @@ public class FoodServiceImpl implements FoodService {
 	}
 	
 	private List<Food> filterByCategory(List<Food> foods, String foodCategory) {
-		return foods.stream().filter(food -> food.getFoodCategory().getName()  == foodCategory).collect(Collectors.toList());
+		return foods.stream().filter(food -> {
+			if(food.getFoodCategory()!= null) {
+				return food.getFoodCategory().getName().equals(foodCategory);
+			}
+			return false;
+		}).collect(Collectors.toList());
 	}
 
 	private List<Food> filterBySeasonal(List<Food> foods, boolean isSeasonal) {
